@@ -89,8 +89,4 @@ streamlit run app.py
 
 Jashan Jindal  
 GitHub: https://github.com/Jashanjindal
-"@ | Out-File -Encoding UTF8 README.md
 
-git add README.md
-git commit -m "Add professional README"
-git push
