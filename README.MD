@@ -1,4 +1,4 @@
-@"
+
 # 🎤 Interview Analyzer
 
 An AI-powered interview practice platform that lets users record spoken answers, transcribes them automatically, and provides structured feedback on confidence, clarity, and relevance.
@@ -89,4 +89,5 @@ streamlit run app.py
 
 Jashan Jindal  
 GitHub: https://github.com/Jashanjindal
+
 
