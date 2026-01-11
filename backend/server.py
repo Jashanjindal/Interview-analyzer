@@ -9,7 +9,7 @@ import uvicorn
 
 app = FastAPI(title="Interview Analyzer API")
 
-# CORS middleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -47,12 +47,12 @@ def analyze_text(transcript: str, question: str) -> Dict[str, Any]:
     word_count = len(words)
     sentence_count = len([s for s in transcript.split('.') if s.strip()])
     
-    # Calculate scores
+    
     confidence_score = 5.0
     clarity_score = 5.0
     relevance_score = 5.0
     
-    # Confidence indicators
+    
     confident_words = ['confident', 'definitely', 'certainly', 'absolutely', 'experienced']
     hedging_words = ['maybe', 'perhaps', 'might', 'possibly', 'kind of', 'sort of']
     
@@ -62,60 +62,60 @@ def analyze_text(transcript: str, question: str) -> Dict[str, Any]:
     confidence_score += confidence_count * 0.5
     confidence_score -= hedging_count * 0.5
     
-    # Adjust for word count (optimal 50-150 words)
+    
     if 50 <= word_count <= 150:
         confidence_score += 2
     elif word_count < 30:
         confidence_score -= 1
     
-    # Clarity scoring
+    
     avg_words_per_sentence = word_count / max(sentence_count, 1)
     
-    # Ideal sentence length is 15-20 words
+    
     if 12 <= avg_words_per_sentence <= 22:
         clarity_score += 2
     
-    # Check for filler words
+    
     fillers = transcript.lower().count('um') + transcript.lower().count('uh') + transcript.lower().count('like')
     clarity_score -= min(fillers * 0.3, 3)
     
-    # Check for structured language
+   
     structure_words = ['first', 'second', 'third', 'finally', 'additionally', 'furthermore']
     structure_count = sum(1 for word in structure_words if word in transcript.lower())
     clarity_score += min(structure_count * 0.5, 2)
     
-    # Relevance scoring
+    
     question_words = set(question.lower().split())
     transcript_words = set(transcript.lower().split())
     
-    # Remove common words
+    
     common_words = {'a', 'an', 'the', 'is', 'are', 'was', 'were', 'in', 'on', 'at', 'to', 'for'}
     question_words -= common_words
     
-    # Calculate overlap
+    
     overlap = len(question_words & transcript_words)
     relevance_score += min(overlap * 0.7, 3)
     
-    # Check for specific examples
+    
     example_indicators = ['example', 'instance', 'experience', 'project', 'time when', 'situation']
     if any(indicator in transcript.lower() for indicator in example_indicators):
         relevance_score += 1.5
     
-    # Cap scores at 10
+    
     confidence_score = min(max(confidence_score, 0), 10)
     clarity_score = min(max(clarity_score, 0), 10)
     relevance_score = min(max(relevance_score, 0), 10)
     
-    # Generate feedback
-    feedback = []
     
-    # Confidence feedback
+    feedback = []
+
+    
     if confidence_score < 6:
         feedback.append("Use more assertive language and reduce hedging words (maybe, possibly, etc.)")
     elif confidence_score > 8:
         feedback.append("Great confidence in your delivery!")
     
-    # Clarity feedback
+    
     if fillers > 5:
         feedback.append("Reduce filler words (um, uh, like) for better clarity")
     
@@ -127,7 +127,7 @@ def analyze_text(transcript: str, question: str) -> Dict[str, Any]:
     if structure_count == 0:
         feedback.append("Use transitional phrases (first, second, additionally) to structure your response")
     
-    # Relevance feedback
+    
     if relevance_score < 6:
         feedback.append("Focus more on directly answering the question asked")
     
@@ -136,12 +136,12 @@ def analyze_text(transcript: str, question: str) -> Dict[str, Any]:
     elif word_count > 200:
         feedback.append("Keep responses more concise and focused")
     
-    # Check for STAR method
+    
     star_words = {'situation', 'task', 'action', 'result'}
     if not any(word in transcript.lower() for word in star_words):
         feedback.append("Consider using the STAR method: Situation, Task, Action, Result")
     
-    # Positive feedback
+    
     if not feedback:
         feedback.append("Excellent response! Keep up the good work.")
     
@@ -178,13 +178,13 @@ async def analyze_audio(
     temp_path = None
     
     try:
-        # Save uploaded file temporarily
+        
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
             content = await audio.read()
             tmp.write(content)
             temp_path = tmp.name
         
-        # Transcribe audio
+        
         transcript, error = transcribe_audio(temp_path)
         
         if error:
@@ -203,7 +203,7 @@ async def analyze_audio(
                 "analysis": {}
             }
         
-        # Analyze transcript
+        
         analysis = analyze_text(transcript, question)
         
         return {
@@ -222,7 +222,7 @@ async def analyze_audio(
         }
     
     finally:
-        # Cleanup temp file
+        
         if temp_path and os.path.exists(temp_path):
             try:
                 os.unlink(temp_path)
