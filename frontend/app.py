@@ -6,10 +6,10 @@ import tempfile
 import requests
 from datetime import datetime
 
-# Configure page
+
 st.set_page_config(page_title="Interview Analyzer", layout="wide")
 
-# Custom CSS
+
 st.markdown("""
     <style>
     .main {
